@@ -1,3 +1,4 @@
+# Los atributos se definen dentro del método __init__ de la clase.
 class Equipos:
     def __init__(self, nombre_equipo, pais, entrenador, estadio, titulos):
         self.nombre_equipo = nombre_equipo
@@ -16,3 +17,10 @@ equipo3 = Equipos("Bayern Munich", "Alemania", "Vicent Kompany", "Allianz Arena"
 equipo4 = Equipos("Juventus", "Italia", "Massimiliano Allegri", "Allianz Stadium", 36)
 equipo5 = Equipos("Paris Saint-Germain", "Francia", "Luis Enrique", "Parc des Princes", 10)
 equipo6 = Equipos("FC Barcelona", "España", "Hansi Flick", "Spotify Camp Nou", 26)
+
+print(equipo1.mostrar_info())
+print(equipo2.mostrar_info())
+print(equipo3.mostrar_info())
+print(equipo4.mostrar_info())
+print(equipo5.mostrar_info())
+print(equipo6.mostrar_info())

@@ -1,4 +1,8 @@
 # Los atributos se definen dentro del método __init__ de la clase.
+# def se inicializan cuando se crea una instancia de la clase.
+# def str se utiliza para definir la representación en cadena (string) de un objeto.
+
+
 class Equipos:
     def __init__(self, nombre_equipo, pais, entrenador, estadio, titulos):
         self.nombre_equipo = nombre_equipo

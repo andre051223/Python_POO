@@ -1,9 +1,8 @@
-
 # Clases son plantillas para crear objetos.
 # Un objeto es una instancia de una clase.
+# Atributos de clase (variables compartidas por todas las instancias)
 
 class FcBarcelona:
-    # Atributos de clase (variables compartidas por todas las instancias)
     nombre = "Futbol Club Barcelona"
     fundacion = 1899
     estadio = "Spotify Camp Nou"

@@ -143,6 +143,102 @@ class Motocicleta(Vehiculo):
         return f"{info_base} | {self._cilindraje}cc | {self._tipo_moto} | {self._combustible}"
 
 
+class Bicicleta(Vehiculo):
+    """
+    Clase para bicicletas, hereda de Vehículo
+    """
+
+    def __init__(self, marca, modelo, año, precio, tipo_bicicleta="Urbana", material="Aluminio", num_velocidades=1):
+        """
+        Inicializa una bicicleta con características específicas
+
+        Args:
+            tipo_bicicleta (str): Tipo de bicicleta (Urbana, Montaña, Ruta, Eléctrica)
+            material (str): Material del marco
+            num_velocidades (int): Número de velocidades
+        """
+        # Las bicicletas no usan combustible
+        super().__init__(marca, modelo, año, precio, "No aplica")
+        self._tipo_bicicleta = tipo_bicicleta
+        self._material = material
+        self._num_velocidades = num_velocidades
+        self._tipo_vehiculo = "Bicicleta"
+
+    @property
+    def tipo_bicicleta(self):
+        return self._tipo_bicicleta
+
+    @property
+    def material(self):
+        return self._material
+
+    @property
+    def num_velocidades(self):
+        return self._num_velocidades
+
+    @property
+    def tipo_vehiculo(self):
+        return self._tipo_vehiculo
+
+    def obtener_info(self):
+        """
+        Sobrescribe el método para incluir información específica de la bicicleta
+
+        Returns:
+            str: Información completa de la bicicleta
+        """
+        info_base = super().obtener_info()
+        velocidades_texto = f"{self._num_velocidades} velocidades" if self._num_velocidades > 1 else "Sin cambios"
+        return f"{info_base} | {self._tipo_bicicleta} | {self._material} | {velocidades_texto}"
+
+
+class Camion(Vehiculo):
+    """
+    Clase para camiones, hereda de Vehículo
+    """
+
+    def __init__(self, marca, modelo, año, precio, capacidad_carga, tipo_camion="Carga", num_ejes=2, combustible="Diesel"):
+        """
+        Inicializa un camión con características específicas
+
+        Args:
+            capacidad_carga (float): Capacidad de carga en toneladas
+            tipo_camion (str): Tipo de camión (Carga, Volteo, Refrigerado, etc.)
+            num_ejes (int): Número de ejes del camión
+        """
+        super().__init__(marca, modelo, año, precio, combustible)
+        self._capacidad_carga = capacidad_carga
+        self._tipo_camion = tipo_camion
+        self._num_ejes = num_ejes
+        self._tipo_vehiculo = "Camión"
+
+    @property
+    def capacidad_carga(self):
+        return self._capacidad_carga
+
+    @property
+    def tipo_camion(self):
+        return self._tipo_camion
+
+    @property
+    def num_ejes(self):
+        return self._num_ejes
+
+    @property
+    def tipo_vehiculo(self):
+        return self._tipo_vehiculo
+
+    def obtener_info(self):
+        """
+        Sobrescribe el método para incluir información específica del camión
+
+        Returns:
+            str: Información completa del camión
+        """
+        info_base = super().obtener_info()
+        return f"{info_base} | {self._capacidad_carga}T | {self._tipo_camion} | {self._num_ejes} ejes | {self._combustible}"
+
+
 class Cliente:
     """
     Clase para representar clientes del concesionario
@@ -429,6 +525,184 @@ class Concesionario:
             total_ingresos = sum(venta['precio'] for venta in self._ventas_realizadas)
             print(f"Total de ingresos: ${total_ingresos:,.2f}")
 
+    def mostrar_inventario_completo(self):
+        """
+        Muestra el inventario completo organizado por tipo de vehículo
+        """
+        if not self._inventario:
+            print("❌ No hay vehículos en el inventario")
+            return
+
+        # Organizar vehículos por tipo
+        inventario_por_tipo = {}
+        for vehiculo in self._inventario:
+            tipo = vehiculo.tipo_vehiculo
+            if tipo not in inventario_por_tipo:
+                inventario_por_tipo[tipo] = {"disponibles": [], "vendidos": []}
+
+            if vehiculo.vendido:
+                inventario_por_tipo[tipo]["vendidos"].append(vehiculo)
+            else:
+                inventario_por_tipo[tipo]["disponibles"].append(vehiculo)
+
+        print(f"\n📋 Inventario Completo del Concesionario {self._nombre}")
+        print("=" * 80)
+
+        for tipo, vehiculos in inventario_por_tipo.items():
+            disponibles = vehiculos["disponibles"]
+            vendidos = vehiculos["vendidos"]
+            total_tipo = len(disponibles) + len(vendidos)
+
+            print(f"\n🚗 {tipo.upper()} - Total: {total_tipo} | Disponibles: {len(disponibles)} | Vendidos: {len(vendidos)}")
+            print("-" * 60)
+
+            if disponibles:
+                print("  ✅ DISPONIBLES:")
+                for i, vehiculo in enumerate(disponibles, 1):
+                    print(f"    {i}. {vehiculo.obtener_info()}")
+
+            if vendidos:
+                print("  ❌ VENDIDOS:")
+                for i, vehiculo in enumerate(vendidos, 1):
+                    print(f"    {i}. {vehiculo.obtener_info()}")
+
+    def generar_reporte_inventario(self):
+        """
+        Genera un reporte detallado del inventario con estadísticas por tipo
+        """
+        if not self._inventario:
+            print("❌ No hay vehículos en el inventario para generar reporte")
+            return
+
+        # Estadísticas por tipo
+        stats_por_tipo = {}
+        valor_total_inventario = 0
+        valor_disponible = 0
+
+        for vehiculo in self._inventario:
+            tipo = vehiculo.tipo_vehiculo
+            if tipo not in stats_por_tipo:
+                stats_por_tipo[tipo] = {
+                    "total": 0,
+                    "disponibles": 0,
+                    "vendidos": 0,
+                    "valor_total": 0,
+                    "valor_disponible": 0
+                }
+
+            stats_por_tipo[tipo]["total"] += 1
+            stats_por_tipo[tipo]["valor_total"] += vehiculo.precio
+            valor_total_inventario += vehiculo.precio
+
+            if vehiculo.vendido:
+                stats_por_tipo[tipo]["vendidos"] += 1
+            else:
+                stats_por_tipo[tipo]["disponibles"] += 1
+                stats_por_tipo[tipo]["valor_disponible"] += vehiculo.precio
+                valor_disponible += vehiculo.precio
+
+        print(f"\n📊 REPORTE DETALLADO DE INVENTARIO")
+        print("=" * 80)
+        print(f"Concesionario: {self._nombre}")
+        print(f"Fecha del reporte: 2026-01-14")
+        print("=" * 80)
+
+        # Resumen general
+        total_vehiculos = len(self._inventario)
+        total_disponibles = len([v for v in self._inventario if not v.vendido])
+        total_vendidos = len([v for v in self._inventario if v.vendido])
+
+        print(f"\n📈 RESUMEN GENERAL:")
+        print(f"  • Total de vehículos: {total_vehiculos}")
+        print(f"  • Vehículos disponibles: {total_disponibles}")
+        print(f"  • Vehículos vendidos: {total_vendidos}")
+        print(f"  • Valor total del inventario: ${valor_total_inventario:,.2f}")
+        print(f"  • Valor del inventario disponible: ${valor_disponible:,.2f}")
+
+        # Detalles por tipo
+        print(f"\n📋 DETALLES POR TIPO DE VEHÍCULO:")
+        print("-" * 80)
+        for tipo, stats in stats_por_tipo.items():
+            porcentaje_vendido = (stats["vendidos"] / stats["total"]) * 100 if stats["total"] > 0 else 0
+
+            print(f"\n🚗 {tipo.upper()}:")
+            print(f"  • Total: {stats['total']} unidades")
+            print(f"  • Disponibles: {stats['disponibles']} unidades")
+            print(f"  • Vendidos: {stats['vendidos']} unidades ({porcentaje_vendido:.1f}%)")
+            print(f"  • Valor total: ${stats['valor_total']:,.2f}")
+            print(f"  • Valor disponible: ${stats['valor_disponible']:,.2f}")
+
+    def buscar_vehiculos_por_precio(self, precio_min=0, precio_max=float('inf')):
+        """
+        Busca vehículos disponibles dentro de un rango de precio
+
+        Args:
+            precio_min (float): Precio mínimo
+            precio_max (float): Precio máximo
+
+        Returns:
+            list: Lista de vehículos en el rango de precio
+        """
+        vehiculos_encontrados = []
+        for vehiculo in self._inventario:
+            if (not vehiculo.vendido and
+                precio_min <= vehiculo.precio <= precio_max):
+                vehiculos_encontrados.append(vehiculo)
+
+        if vehiculos_encontrados:
+            print(f"\n💰 Vehículos disponibles entre ${precio_min:,.2f} y ${precio_max:,.2f}:")
+            print("-" * 70)
+            for i, vehiculo in enumerate(vehiculos_encontrados, 1):
+                print(f"{i}. {vehiculo.obtener_info()}")
+        else:
+            print(f"\n❌ No se encontraron vehículos en el rango de precio ${precio_min:,.2f} - ${precio_max:,.2f}")
+
+        return vehiculos_encontrados
+
+    def obtener_vehiculos_mas_caros(self, limite=5):
+        """
+        Obtiene los vehículos más caros del inventario disponible
+
+        Args:
+            limite (int): Número de vehículos a mostrar
+
+        Returns:
+            list: Lista de los vehículos más caros
+        """
+        vehiculos_disponibles = [v for v in self._inventario if not v.vendido]
+        vehiculos_ordenados = sorted(vehiculos_disponibles, key=lambda x: x.precio, reverse=True)
+        vehiculos_top = vehiculos_ordenados[:limite]
+
+        if vehiculos_top:
+            print(f"\n💎 Top {len(vehiculos_top)} vehículos más caros disponibles:")
+            print("-" * 70)
+            for i, vehiculo in enumerate(vehiculos_top, 1):
+                print(f"{i}. {vehiculo.obtener_info()}")
+
+        return vehiculos_top
+
+    def obtener_vehiculos_mas_baratos(self, limite=5):
+        """
+        Obtiene los vehículos más baratos del inventario disponible
+
+        Args:
+            limite (int): Número de vehículos a mostrar
+
+        Returns:
+            list: Lista de los vehículos más baratos
+        """
+        vehiculos_disponibles = [v for v in self._inventario if not v.vendido]
+        vehiculos_ordenados = sorted(vehiculos_disponibles, key=lambda x: x.precio)
+        vehiculos_top = vehiculos_ordenados[:limite]
+
+        if vehiculos_top:
+            print(f"\n💰 Top {len(vehiculos_top)} vehículos más económicos disponibles:")
+            print("-" * 70)
+            for i, vehiculo in enumerate(vehiculos_top, 1):
+                print(f"{i}. {vehiculo.obtener_info()}")
+
+        return vehiculos_top
+
 
 def main():
     """
@@ -454,11 +728,21 @@ def main():
     moto1 = Motocicleta("Yamaha", "R1", 2023, 45000000, 1000, "Deportiva")
     moto2 = Motocicleta("Honda", "CB650", 2022, 28000000, 650, "Naked")
 
+    bici1 = Bicicleta("Giant", "Escape 3", 2023, 5000000, "Urbana", "Aluminio", 3)
+    bici2 = Bicicleta("Trek", "Marlin 7", 2022, 7000000, "Montaña", "Carbono", 18)
+
+    camion1 = Camion("Volvo", "FH16", 2023, 150000000, 18, "Carga", 4, "Diesel")
+    camion2 = Camion("Mercedes-Benz", "Actros", 2022, 140000000, 16, "Refrigerado", 3, "Diesel")
+
     concesionario.agregar_vehiculo(auto1)
     concesionario.agregar_vehiculo(auto2)
     concesionario.agregar_vehiculo(auto3)
     concesionario.agregar_vehiculo(moto1)
     concesionario.agregar_vehiculo(moto2)
+    concesionario.agregar_vehiculo(bici1)
+    concesionario.agregar_vehiculo(bici2)
+    concesionario.agregar_vehiculo(camion1)
+    concesionario.agregar_vehiculo(camion2)
 
     # Registrar clientes
     print("\n👥 Registrando clientes...")
@@ -493,6 +777,29 @@ def main():
     # Mostrar vehículos disponibles después de las ventas
     print("\n🚗 Vehículos disponibles después de las ventas:")
     concesionario.consultar_vehiculos_disponibles()
+
+    # === NUEVAS FUNCIONALIDADES DE INVENTARIO ===
+
+    # Mostrar inventario completo organizado por tipo
+    concesionario.mostrar_inventario_completo()
+
+    # Generar reporte detallado de inventario
+    concesionario.generar_reporte_inventario()
+
+    # Demostrar búsquedas por precio
+    print("\n🔍 Búsquedas por rango de precio...")
+    concesionario.buscar_vehiculos_por_precio(50000000, 100000000)
+    concesionario.buscar_vehiculos_por_precio(0, 10000000)
+
+    # Mostrar vehículos más caros y más baratos
+    print("\n🏆 Rankings de precios...")
+    concesionario.obtener_vehiculos_mas_caros(3)
+    concesionario.obtener_vehiculos_mas_baratos(3)
+
+    # Consultar vehículos disponibles por tipo específico
+    print("\n📝 Consultas por tipo de vehículo...")
+    concesionario.consultar_vehiculos_disponibles("Bicicleta")
+    concesionario.consultar_vehiculos_disponibles("Camión")
 
 
 if __name__ == "__main__":

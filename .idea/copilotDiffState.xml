@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/main.py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/main.py" />
+              <option name="updatedContent" value="# ...existing code...&#10;from vehicle import Vehicle, Car, Bicicleta, Motocicleta, Camion&#10;&#10;# ...existing code...&#10;&#10;# Crear nuevos vehículos&#10;bicicleta1 = Bicicleta(&quot;Trek&quot;, &quot;Mountain Bike&quot;, 2023, &quot;montaña&quot;)&#10;bicicleta1.set_num_cambios(21)&#10;&#10;motocicleta1 = Motocicleta(&quot;Yamaha&quot;, &quot;YZF-R3&quot;, 2023, 321)&#10;motocicleta1.set_tipo_motor(&quot;4 tiempos&quot;)&#10;&#10;camion1 = Camion(&quot;Volvo&quot;, &quot;FH16&quot;, 2022, 40000)&#10;camion1.set_num_ejes(4)&#10;&#10;# ...existing code...&#10;&#10;print(&quot;\n--- Nuevos Vehículos ---&quot;)&#10;print(bicicleta1.get_info())&#10;print(motocicleta1.get_info())&#10;print(camion1.get_info())&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
